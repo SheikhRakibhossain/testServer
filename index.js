@@ -2,34 +2,53 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 //middle ware
 app.use(cors());
 app.use(express.json())
 
- const users = [
-    {id:1, name:'Rakib',age:27, status:'unemployment', email:'rakib@gamil.com'},
-    {id:2, name:'Sakib',age:28, status:'employment', email:'sakib@gamil.com'},
-    {id:3, name:'Akib',age:37, status:'uemployment', email:'akib@gamil.com'},
-    {id:4, name:'Nakib',age:25, status:'unemployment', email:'nakib@gamil.com'},
- ]
-
 app.get('/',(req, res)=>{
     res.send(`<h2>Hello Backend world<h2/>`)
 })
 
-app.get('/users',(req, res)=>{
-res.send(users);
-})
+const uri = "mongodb+srv://sonaly:sonalyrakib@cluster0.dracezw.mongodb.net/?retryWrites=true&w=majority";
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+  async function run() {
+    try {
+      // Connect the client to the server	(optional starting in v4.7)
+      await client.connect();
 
-//get data from client site api
-app.post('/users',(req, res)=>{
-   const newUsers = req.body;
-   newUsers.id = users.length + 1;
-   users.push(newUsers);
-   res.send(newUsers);
+      //user data api
 
-})
+      const userCollection = client.db("sonalyDB").collection("users");
+
+        app.post('/user',async(req ,res)=>{
+            const user = req.body;
+            console.log(user);
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+
+        })
+
+      // Send a ping to confirm a successful connection
+      await client.db("admin").command({ ping: 1 });
+      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+      // Ensures that the client will close when you finish/error
+    //   await client.close();
+    }
+  }
+  run().catch(console.dir);
+
+
 
 app.listen(port, ()=>{
     console.log(`We are running on ${port}`)
