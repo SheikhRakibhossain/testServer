@@ -8,7 +8,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 app.use(cors());
 app.use(express.json())
 
-app.get('/',(req, res)=>{
+app.get('/', (req, res) => {
     res.send(`<h2>Hello Backend world<h2/>`)
 })
 
@@ -16,21 +16,21 @@ const uri = "mongodb+srv://sonaly:sonalyrakib@cluster0.dracezw.mongodb.net/?retr
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
     }
-  });
-  async function run() {
+});
+async function run() {
     try {
-      // Connect the client to the server	(optional starting in v4.7)
-      await client.connect();
+        // Connect the client to the server	(optional starting in v4.7)
+        await client.connect();
 
-      //user data api
+        //user data api
 
-      const userCollection = client.db("sonalyDB").collection("users");
-
-        app.post('/user',async(req ,res)=>{
+        const userCollection = client.db("sonalyDB").collection("users");
+        //data insert from client site api calling
+        app.post('/user', async (req, res) => {
             const user = req.body;
             console.log(user);
             const result = await userCollection.insertOne(user);
@@ -38,18 +38,25 @@ const client = new MongoClient(uri, {
 
         })
 
-      // Send a ping to confirm a successful connection
-      await client.db("admin").command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        //data get from database center
+        app.get('/user', async (req, res) => {
+            const cursor = userCollection.find()
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-      // Ensures that the client will close when you finish/error
-    //   await client.close();
+        // Ensures that the client will close when you finish/error
+        //   await client.close();
     }
-  }
-  run().catch(console.dir);
+}
+run().catch(console.dir);
 
 
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`We are running on ${port}`)
 })
