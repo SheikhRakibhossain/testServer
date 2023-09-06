@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middle ware
 app.use(cors());
@@ -29,6 +29,7 @@ async function run() {
         //user data api
 
         const userCollection = client.db("sonalyDB").collection("users");
+
         //data insert from client site api calling
         app.post('/user', async (req, res) => {
             const user = req.body;
@@ -37,12 +38,20 @@ async function run() {
             res.send(result);
 
         })
-
         //data get from database center
         app.get('/user', async (req, res) => {
             const cursor = userCollection.find()
             const result = await cursor.toArray();
             res.send(result);
+        })
+        //data delete from ui to database
+        app.delete('/user/:id', async (req, res)=>{
+            const id = req.params.id;
+            console.log('Want to delete', id);
+            const query = { _id: new ObjectId(id) }
+            const result = await userCollection.deleteOne(query)
+            res.send(result);
+
         })
 
         // Send a ping to confirm a successful connection
