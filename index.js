@@ -6,7 +6,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middle ware
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send(`<h2>Hello Backend world<h2/>`)
@@ -27,7 +27,7 @@ async function run() {
         await client.connect();
 
         //user data api
-        const userCollection = client.db("sonalyDB").collection("users");
+        const userCollection = client.db("sonalyDB").collection("user");
 
         //data save function for post and save user
         app.post('/user', async(req, res)=>{
@@ -51,7 +51,25 @@ async function run() {
             const user = await userCollection.findOne(query)
             res.send(user);
         })
-        // user
+        // user update main single api
+        app.put('/user/:id',async(req, res)=>{
+
+            const id = req.params.id;
+            const user = req.body;
+            const filter = {_id: new ObjectId(id)}
+            const options ={ upsert:true}
+            const updateUser = {
+                $set:{
+                    name:user.name,
+                    status:user.status,
+                    email:user.email,
+
+                }
+            }
+            const result = await userCollection.updateOne(filter, updateUser,options)
+            res.send(result);
+
+        })
 
         //delete api here
         app.delete('/user/:id', async(req, res)=>{
