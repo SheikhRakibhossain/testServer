@@ -45,7 +45,12 @@ async function run() {
         })
 
         // user or database update system
-        
+        app.get('/user/:id',async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const user = await userCollection.findOne(query)
+            res.send(user);
+        })
 
         //delete api here
         app.delete('/user/:id', async(req, res)=>{
