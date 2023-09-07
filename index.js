@@ -51,6 +51,7 @@ async function run() {
             const user = await userCollection.findOne(query)
             res.send(user);
         })
+        // user
 
         //delete api here
         app.delete('/user/:id', async(req, res)=>{
