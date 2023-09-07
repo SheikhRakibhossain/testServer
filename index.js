@@ -27,33 +27,29 @@ async function run() {
         await client.connect();
 
         //user data api
-
         const userCollection = client.db("sonalyDB").collection("users");
 
-        //data insert from client site api calling
-        app.post('/user', async (req, res) => {
+        //data save function for post and save user
+        app.post('/user', async(req, res)=>{
             const user = req.body;
-            console.log(user);
+            console.log(user)
             const result = await userCollection.insertOne(user);
-            res.send(result);
-
+            res.send(result)
         })
-        //data get from database center
-        app.get('/user', async (req, res) => {
-            const cursor = userCollection.find()
+
+        //data show using this api
+        app.get('/user', async(req, res)=>{
+            const cursor = userCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
-        //data delete from ui to database
-        app.delete('/user/:id', async (req, res)=>{
+        //delete api here
+        app.delete('/user/:id', async(req, res)=>{
             const id = req.params.id;
-            console.log('Want to delete', id);
-            const query = { _id: new ObjectId(id) }
-            const result = await userCollection.deleteOne(query)
-            res.send(result);
-
+            const query = { _id: new ObjectId(id)}
+            const result = await userCollection.deleteOne(query);
+            res.send(result)
         })
-
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
