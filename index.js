@@ -28,6 +28,7 @@ async function run() {
 
         //user data api
         const userCollection = client.db("sonalyDB").collection("user");
+        const serviceCollection = client.db("services").collection("service");
 
         //data save function for post and save user
         app.post('/user', async(req, res)=>{
