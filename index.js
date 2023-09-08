@@ -88,7 +88,11 @@ async function run() {
             res.send(result);
             console.log(service)
         })
+        app.get('/services', async(req, res)=>{
 
+            const result = await serviceCollection.find().toArray();
+            res.send(result)
+        })
 
 
 
