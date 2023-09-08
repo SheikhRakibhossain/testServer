@@ -28,7 +28,7 @@ async function run() {
 
         //user data api
         const userCollection = client.db("sonalyDB").collection("user");
-        const serviceCollection = client.db("services").collection("service");
+        const serviceCollection = client.db("sonalyDB").collection("services");
 
         //data save function for post and save user
         app.post('/user', async(req, res)=>{
@@ -79,6 +79,17 @@ async function run() {
             const result = await userCollection.deleteOne(query);
             res.send(result)
         })
+
+        // services form making started from here
+        app.post('/services',async(req, res)=>{
+
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service);
+            res.send(result);
+            console.log(service)
+        })
+
+
 
 
         // Send a ping to confirm a successful connection
