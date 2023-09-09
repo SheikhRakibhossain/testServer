@@ -88,12 +88,21 @@ async function run() {
             res.send(result);
             console.log(service)
         })
+        //service data show api
         app.get('/services', async(req, res)=>{
 
             const result = await serviceCollection.find().toArray();
             res.send(result)
         })
 
+        // service delete api
+        app.delete('/services/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await serviceCollection.deleteOne(query);
+            res.send(result);
+
+        })
 
 
         // Send a ping to confirm a successful connection
