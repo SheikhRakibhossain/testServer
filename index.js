@@ -99,9 +99,17 @@ async function run() {
         app.delete('/services/:id', async(req, res)=>{
             const id = req.params.id;
             const query = {_id: new ObjectId(id)};
-            const result = await serviceCollection.deleteOne(query);
+            const result = await serviceCollection.deleteOne(query)
             res.send(result);
 
+        })
+
+        //service update api for get id
+        app.get('/updateservices/:id',async(req, res)=>{
+            const result = await serviceCollection.findOne({
+                _id:new ObjectId(req.params.id)
+            });
+            res.send(result)
         })
 
 
